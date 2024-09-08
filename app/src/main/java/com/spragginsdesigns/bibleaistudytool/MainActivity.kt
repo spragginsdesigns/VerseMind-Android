@@ -6,8 +6,10 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         runOnUiThread {
-            showError("Error: ${throwable.localizedMessage ?: "Unknown error"}")
+            showError("An error occurred: ${throwable.localizedMessage ?: "Unknown error"}")
         }
     }
 
@@ -61,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             if (question.isNotEmpty()) {
                 getAnswer(question)
             } else {
-                showError("Please enter a question.")
+                showSnackbar("Please enter a question.")
             }
         }
     }
@@ -80,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 displayMarkdownAnswer(answer)
                 answerCard.visibility = View.VISIBLE
             } catch (e: Exception) {
-                showError("Error: ${e.localizedMessage ?: "An error occurred"}")
+                showError("Unable to get an answer. Please try again later.")
             } finally {
                 showLoading(false)
             }
@@ -116,7 +118,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String) {
-        tvAnswer.text = message
+        showSnackbar(message)
+        tvAnswer.text = "Sorry, I couldn't process your request at this time. Please try again later."
         answerCard.visibility = View.VISIBLE
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
     }
 }
