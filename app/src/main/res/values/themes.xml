@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Dark theme colors -->
+    <style name="Theme.BibleAIStudyTool" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Primary branding colors -->
+        <item name="colorPrimary">#BB86FC</item> <!-- Light Purple -->
+        <item name="colorPrimaryVariant">#3700B3</item> <!-- Darker Purple -->
+        <item name="colorOnPrimary">#000000</item> <!-- Black Text on Purple -->
+        <item name="colorSecondary">#03DAC5</item> <!-- Teal -->
+        <item name="android:windowBackground">#121212</item> <!-- Dark Background -->
+        <item name="android:textColorPrimary">#FFFFFF</item> <!-- White Text -->
+        <item name="android:navigationBarColor">#121212</item>
+        <item name="android:statusBarColor">#3700B3</item>
+    </style>
+</resources>
