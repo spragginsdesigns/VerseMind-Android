@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">VerseMind</string>
+    <string name="title_verse_mind">VerseMind</string>
+    <string name="hint_ask_question">Ask your question here…</string>
+    <string name="button_submit">Submit</string>
+    <string name="label_question">Question:</string>
+    <string name="label_answer">Answer:</string>
 </resources>

@@ -3,13 +3,13 @@ package com.spragginsdesigns.bibleaistudytool
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.ScrollView
+import android.widget.LinearLayout
 import android.widget.Toast
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.snackbar.Snackbar
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -21,12 +21,13 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
 
     private lateinit var etBibleQuestion: EditText
-    private lateinit var btnSubmit: MaterialButton
+    private lateinit var btnSubmit: Button
     private lateinit var tvQuestion: TextView
     private lateinit var tvAnswer: TextView
     private lateinit var progressBar: ProgressBar
-    private lateinit var questionCard: MaterialCardView
-    private lateinit var answerCard: MaterialCardView
+    private lateinit var questionLayout: LinearLayout
+    private lateinit var answerLayout: LinearLayout
+    private lateinit var scrollView: ScrollView
     private val client = OkHttpClient()
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -49,12 +50,13 @@ class MainActivity : AppCompatActivity() {
         tvQuestion = findViewById(R.id.tvQuestion)
         tvAnswer = findViewById(R.id.tvAnswer)
         progressBar = findViewById(R.id.progressBar)
-        questionCard = findViewById(R.id.questionCard)
-        answerCard = findViewById(R.id.answerCard)
+        questionLayout = findViewById(R.id.questionLayout)
+        answerLayout = findViewById(R.id.answerLayout)
+        scrollView = findViewById(R.id.scrollView)
 
-        // Initially hide the question and answer cards
-        questionCard.visibility = View.GONE
-        answerCard.visibility = View.GONE
+        // Initially hide the question and answer layouts
+        questionLayout.visibility = View.GONE
+        answerLayout.visibility = View.GONE
     }
 
     private fun setupClickListeners() {
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             if (question.isNotEmpty()) {
                 getAnswer(question)
             } else {
-                showSnackbar("Please enter a question.")
+                showToast("Please enter a question.")
             }
         }
     }
@@ -71,8 +73,8 @@ class MainActivity : AppCompatActivity() {
     private fun getAnswer(question: String) {
         showLoading(true)
         tvQuestion.text = question
-        questionCard.visibility = View.VISIBLE
-        answerCard.visibility = View.GONE
+        questionLayout.visibility = View.VISIBLE
+        answerLayout.visibility = View.GONE
 
         CoroutineScope(Dispatchers.Main + coroutineExceptionHandler).launch {
             try {
@@ -80,7 +82,8 @@ class MainActivity : AppCompatActivity() {
                     fetchAnswerFromAPI(question)
                 }
                 displayMarkdownAnswer(answer)
-                answerCard.visibility = View.VISIBLE
+                answerLayout.visibility = View.VISIBLE
+                scrollView.post { scrollView.fullScroll(View.FOCUS_DOWN) }
             } catch (e: Exception) {
                 showError("Unable to get an answer. Please try again later.")
             } finally {
@@ -118,12 +121,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String) {
-        showSnackbar(message)
+        showToast(message)
         tvAnswer.text = "Sorry, I couldn't process your request at this time. Please try again later."
-        answerCard.visibility = View.VISIBLE
+        answerLayout.visibility = View.VISIBLE
     }
 
-    private fun showSnackbar(message: String) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
